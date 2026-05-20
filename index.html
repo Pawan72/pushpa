@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Untuk Kamu, Sayang ❤️</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Quicksand',sans-serif;overflow-x:hidden;background:#0a0a2e;color:#f0e6ff}
+canvas#starfield{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0}
+.content{position:relative;z-index:1;width:100%}
+section{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;position:relative;scroll-snap-align:start}
+
+/* ===== HERO ===== */
+#hero{text-align:center}
+#hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,6vw,5rem);color:#ffd700;text-shadow:0 0 40px rgba(255,215,0,0.3);animation:fadeInUp 1.5s ease}
+#hero .sub{font-size:clamp(1rem,2.5vw,1.8rem);color:#e8a0b4;margin-top:12px;animation:fadeInUp 1.5s ease 0.3s both}
+#hero .sub2{font-size:clamp(0.8rem,1.5vw,1.1rem);color:#b8a0d4;margin-top:24px;animation:fadeInUp 1.5s ease 0.6s both;max-width:500px;line-height:1.8}
+.scroll-hint{position:absolute;bottom:30px;font-size:0.85rem;color:rgba(255,215,0,0.5);animation:bounce 2s infinite}
+
+/* ===== QUOTES ===== */
+#quotes{background:rgba(10,10,46,0.3)}
+.quote-container{max-width:700px;width:100%;min-height:200px;display:flex;align-items:center;justify-content:center;position:relative}
+.quote-card{position:absolute;padding:40px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,215,0,0.15);border-radius:20px;backdrop-filter:blur(10px);text-align:center;opacity:0;transform:translateY(20px) scale(0.95);transition:all 0.8s ease;width:100%;max-width:600px}
+.quote-card.active{opacity:1;transform:translateY(0) scale(1)}
+.quote-card .quote-text{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(1.1rem,2.5vw,1.6rem);color:#f0e6ff;line-height:1.7}
+.quote-card .quote-source{font-size:0.9rem;color:#e8a0b4;margin-top:16px}
+.quote-dots{display:flex;gap:10px;margin-top:30px}
+.quote-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,215,0,0.2);cursor:pointer;transition:all 0.3s;border:none}
+.quote-dot.active{background:#ffd700;box-shadow:0 0 10px rgba(255,215,0,0.5)}
+
+/* ===== FLOWERS ===== */
+#flowers{background:rgba(10,10,46,0.2)}
+#flowers h2{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3vw,2.5rem);color:#ffd700;margin-bottom:40px;text-shadow:0 0 20px rgba(255,215,0,0.2)}
+.flower-garden{display:flex;gap:clamp(15px,5vw,60px);flex-wrap:wrap;justify-content:center;align-items:flex-end;padding:20px 0}
+.flower{display:flex;flex-direction:column;align-items:center;animation:sway 3s ease-in-out infinite alternate;transform-origin:bottom center}
+.flower:nth-child(2){animation-delay:-1s}
+.flower:nth-child(3){animation-delay:-2s}
+.flower:nth-child(4){animation-delay:-0.5s}
+.flower:nth-child(5){animation-delay:-1.5s}
+.stem{width:4px;height:clamp(80px,15vw,150px);background:linear-gradient(to top,#2d5a27,#4a8c3f);border-radius:2px;position:relative}
+.leaf{position:absolute;width:20px;height:10px;background:#4a8c3f;border-radius:50%;bottom:30%}
+.leaf-left{left:-18px;transform:rotate(-30deg)}
+.leaf-right{right:-18px;transform:rotate(30deg)}
+.flower-head{position:relative;width:clamp(60px,10vw,100px);height:clamp(60px,10vw,100px);margin-bottom:-5px}
+.petal{position:absolute;width:clamp(22px,4vw,40px);height:clamp(22px,4vw,40px);border-radius:50%;top:50%;left:50%;transform-origin:0 0;opacity:0.85}
+.petal:nth-child(1){transform:rotate(0deg) translateY(-50%);background:var(--c1)}
+.petal:nth-child(2){transform:rotate(60deg) translateY(-50%);background:var(--c2)}
+.petal:nth-child(3){transform:rotate(120deg) translateY(-50%);background:var(--c1)}
+.petal:nth-child(4){transform:rotate(180deg) translateY(-50%);background:var(--c2)}
+.petal:nth-child(5){transform:rotate(240deg) translateY(-50%);background:var(--c1)}
+.petal:nth-child(6){transform:rotate(300deg) translateY(-50%);background:var(--c2)}
+.flower-center{position:absolute;width:clamp(12px,2vw,20px);height:clamp(12px,2vw,20px);background:#ffd700;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);box-shadow:0 0 15px rgba(255,215,0,0.5);z-index:2}
+.f1{--c1:#ff6b8a;--c2:#ff3b6f}
+.f2{--c1:#e8a0b4;--c2:#d4708a}
+.f3{--c1:#ffb347;--c2:#ff8c00}
+.f4{--c1:#c084fc;--c2:#a855f7}
+.f5{--c1:#f472b6;--c2:#ec4899}
+.flower-head{animation:bloom 2s ease-out both}
+.flower:nth-child(1) .flower-head{animation-delay:0s}
+.flower:nth-child(2) .flower-head{animation-delay:0.3s}
+.flower:nth-child(3) .flower-head{animation-delay:0.6s}
+.flower:nth-child(4) .flower-head{animation-delay:0.9s}
+.flower:nth-child(5) .flower-head{animation-delay:1.2s}
+
+/* ===== QUIZ ===== */
+#quiz{background:rgba(10,10,46,0.3)}
+#quiz h2{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3vw,2.5rem);color:#ffd700;margin-bottom:10px}
+#quiz .subtitle{color:#e8a0b4;margin-bottom:40px;font-size:clamp(0.9rem,1.3vw,1.1rem)}
+.quiz-progress{display:flex;gap:8px;margin-bottom:30px}
+.qdot{width:12px;height:12px;border-radius:50%;background:rgba(255,215,0,0.15);transition:all 0.3s}
+.qdot.done{background:#e8a0b4}
+.qdot.active{background:#ffd700;box-shadow:0 0 12px rgba(255,215,0,0.5)}
+.quiz-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,215,0,0.12);border-radius:20px;padding:clamp(20px,4vw,40px);backdrop-filter:blur(10px);width:100%;max-width:500px;text-align:center}
+.quiz-card .question{font-size:clamp(1.2rem,2.5vw,1.6rem);color:#f0e6ff;margin-bottom:30px;min-height:60px;font-weight:600}
+.answers{display:flex;flex-direction:column;gap:12px}
+.answer{position:relative;padding:14px 24px;border:1px solid rgba(255,255,255,0.1);border-radius:12px;background:rgba(255,255,255,0.04);color:#f0e6ff;font-size:clamp(0.95rem,1.2vw,1.1rem);cursor:pointer;transition:all 0.3s;font-family:'Quicksand',sans-serif;font-weight:600;overflow:hidden}
+.answer:hover{background:rgba(255,215,0,0.1);border-color:rgba(255,215,0,0.3);transform:scale(1.02)}
+.answer.correct{background:rgba(255,215,0,0.15);border-color:#ffd700;color:#ffd700;animation:pulse 0.5s}
+.answer.wrong{background:rgba(255,70,70,0.15);border-color:#ff4646;color:#ff4646;animation:shake 0.5s}
+.answer.flee{position:relative;transition:all 0.15s}
+.answer .emoji-bg{position:absolute;font-size:4rem;opacity:0.08;right:10px;bottom:5px;pointer-events:none}
+.quiz-result{display:none;text-align:center;padding:30px}
+.quiz-result.show{display:block;animation:fadeInUp 0.6s ease}
+.quiz-result h3{font-family:'Playfair Display',serif;font-size:clamp(1.3rem,2.5vw,2rem);color:#ffd700;margin-bottom:15px}
+.quiz-result p{color:#e8a0b4;font-size:1.05rem;margin-bottom:20px;line-height:1.8}
+.quiz-result .love-meter{width:100%;max-width:300px;height:16px;background:rgba(255,255,255,0.08);border-radius:8px;overflow:hidden;margin:20px auto;position:relative}
+.quiz-result .love-fill{height:100%;width:0%;background:linear-gradient(90deg,#e8a0b4,#ffd700);border-radius:8px;transition:width 2s ease}
+.quiz-result .reset-btn{padding:12px 30px;border:1px solid rgba(255,215,0,0.3);border-radius:12px;background:transparent;color:#ffd700;font-size:1rem;cursor:pointer;transition:all 0.3s;font-family:'Quicksand',sans-serif;font-weight:600;margin-top:20px}
+.quiz-result .reset-btn:hover{background:rgba(255,215,0,0.1);border-color:#ffd700}
+
+/* ===== CLOSING ===== */
+#closing{text-align:center;padding:60px 20px}
+#closing h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,4rem);color:#ffd700;text-shadow:0 0 40px rgba(255,215,0,0.3);animation:fadeInUp 1.5s ease}
+#closing p{font-size:clamp(1rem,2vw,1.4rem);color:#e8a0b4;margin-top:15px}
+#closing .jv{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(1.5rem,3vw,2.2rem);color:#c084fc;margin-top:30px;text-shadow:0 0 20px rgba(192,132,252,0.3)}
+
+/* ===== HEART EXPLOSION ===== */
+.heart-particle{position:fixed;pointer-events:none;z-index:100;font-size:clamp(1rem,2.5vw,2.5rem);animation:heartFloat 2s ease-out forwards}
+@keyframes heartFloat{0%{opacity:1;transform:translateY(0) scale(0.5) rotate(0deg)}100%{opacity:0;transform:translateY(-200px) scale(1.5) rotate(20deg)}}
+
+/* ===== KEYFRAMES ===== */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes sway{0%{transform:rotate(-3deg)}100%{transform:rotate(3deg)}}
+@keyframes bloom{0%{transform:scale(0);opacity:0}60%{transform:scale(1.2)}100%{transform:scale(1);opacity:1}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+@keyframes twinkle{0%,100%{opacity:var(--base)}50%{opacity:calc(var(--base)*0.3)}}
+@keyframes petalFloat{0%{opacity:1;transform:translateY(0) rotate(0deg) translateX(0)}100%{opacity:0;transform:translateY(100vh) rotate(720deg) translateX(100px)}}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:600px){
+  section{padding:30px 16px}
+  .quote-card{padding:24px}
+  .answer{padding:12px 18px;font-size:0.95rem}
+}
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+
+<div class="content">
+
+<!-- ===== HERO ===== -->
+<section id="hero">
+  <h1>Untuk Kamu, Sayangku ❤️</h1>
+  <p class="sub">Buat Pushpa, cintaku satu-satunya</p>
+  <p class="sub2">
+    Aku cuma mau bilang...<br>
+    setiap detik tanpa kamu tuh kayak langit tanpa bintang.<br>
+    Gelap. Sepi. Nggak lengkap.<br>
+    Makanya aku buat ini khusus buat kamu.
+  </p>
+  <div class="scroll-hint">↓ scroll ke bawah ya sayang ↓</div>
+</section>
+
+<!-- ===== QUOTES ===== -->
+<section id="quotes">
+  <div class="quote-container" id="quoteContainer">
+    <div class="quote-card active" data-idx="0">
+      <div class="quote-text">"Aku tresno karo kowe. Ora mung saiki, nanging selawase."</div>
+      <div class="quote-source">— Bahasa cintaku buat kamu</div>
+    </div>
+    <div class="quote-card" data-idx="1">
+      <div class="quote-text">"Kamu itu like the stars — you light up my whole world, especially on the darkest nights."</div>
+      <div class="quote-source">— My favorite view is you</div>
+    </div>
+    <div class="quote-card" data-idx="2">
+      <div class="quote-text">"Aku sayang kamu bukan karena kamu sempurna. Tapi karena kamu adalah kamu. Dan aku gak mau kamu jadi orang lain."</div>
+      <div class="quote-source">— Buat kamu yang selalu spesial</div>
+    </div>
+    <div class="quote-card" data-idx="3">
+      <div class="quote-text">"Sakjane aku wis ngerti, yen jodho iku saka Gusti. Tapi aku tetep milih kamu. Beribu-ribu kali."</div>
+      <div class="quote-source">— Pilihanku selalu kamu</div>
+    </div>
+    <div class="quote-card" data-idx="4">
+      <div class="quote-text">"If I had a star for every time I thought of you, I'd have the entire galaxy in my hands."</div>
+      <div class="quote-source">— And I'd give it all to you</div>
+    </div>
+  </div>
+  <div class="quote-dots" id="quoteDots"></div>
+</section>
+
+<!-- ===== FLOWERS ===== -->
+<section id="flowers">
+  <h2>🌸 Bunga buat kamu, sayang 🌸</h2>
+  <p style="color:#e8a0b4;margin-bottom:20px;font-size:clamp(0.85rem,1.2vw,1rem)">Setiap kelopaknya mewakili rasa sayang aku ke kamu</p>
+  <div class="flower-garden">
+    <div class="flower f1">
+      <div class="flower-head">
+        <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+        <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+        <div class="flower-center"></div>
+      </div>
+      <div class="stem" style="height:100px">
+        <div class="leaf leaf-left"></div>
+        <div class="leaf leaf-right"></div>
+      </div>
+    </div>
+    <div class="flower f2">
+      <div class="flower-head">
+        <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+        <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+        <div class="flower-center"></div>
+      </div>
+      <div class="stem" style="height:130px">
+        <div class="leaf leaf-left"></div>
+        <div class="leaf leaf-right"></div>
+      </div>
+    </div>
+    <div class="flower f3">
+      <div class="flower-head">
+        <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+        <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+        <div class="flower-center"></div>
+      </div>
+      <div class="stem" style="height:110px">
+        <div class="leaf leaf-left"></div>
+        <div class="leaf leaf-right"></div>
+      </div>
+    </div>
+    <div class="flower f4">
+      <div class="flower-head">
+        <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+        <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+        <div class="flower-center"></div>
+      </div>
+      <div class="stem" style="height:140px">
+        <div class="leaf leaf-left"></div>
+        <div class="leaf leaf-right"></div>
+      </div>
+    </div>
+    <div class="flower f5">
+      <div class="flower-head">
+        <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+        <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+        <div class="flower-center"></div>
+      </div>
+      <div class="stem" style="height:90px">
+        <div class="leaf leaf-left"></div>
+        <div class="leaf leaf-right"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== QUIZ ===== -->
+<section id="quiz">
+  <h2>💕 Coba Jawab Ya 💕</h2>
+  <p class="subtitle">Jujur ya sayang, jangan bohong! 😄</p>
+  <div class="quiz-progress" id="quizProgress"></div>
+  <div class="quiz-card" id="quizCard">
+    <div class="question" id="question"></div>
+    <div class="answers" id="answers"></div>
+    <div class="quiz-result" id="quizResult">
+      <h3>🥳 SELESAI! 🥳</h3>
+      <p id="resultMessage"></p>
+      <div class="love-meter">
+        <div class="love-fill" id="loveFill"></div>
+      </div>
+      <p id="lovePercent" style="color:#ffd700;font-size:1.4rem;font-weight:700;margin-bottom:10px"></p>
+      <p style="color:#e8a0b4;font-size:0.95rem">Lihat tuh, kamu tuh love-nya aku banget! ❤️</p>
+      <button class="reset-btn" onclick="resetQuiz()">🔄 Jawab Lagi Dong!</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CLOSING ===== -->
+<section id="closing">
+  <h2>I Love You</h2>
+  <p>More than words can ever say.</p>
+  <p style="margin-top:8px;color:#b8a0d4">Makasih udah jadi kamu. Kamu tuh spesial banget.</p>
+  <div class="jv">"Aku tresno karo kowe, selawase."</div>
+  <p style="margin-top:40px;font-size:0.85rem;color:rgba(255,255,255,0.3)">dibuat dengan cinta ❤️</p>
+</section>
+
+</div>
+
+<script>
+// ===== CANVAS STARFIELD =====
+const canvas = document.getElementById('starfield');
+const ctx = canvas.getContext('2d');
+let W, H;
+
+function resize(){
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const stars = [];
+const STAR_COUNT = 350;
+for(let i=0; i<STAR_COUNT; i++){
+  stars.push({
+    x: Math.random() * W,
+    y: Math.random() * H,
+    r: Math.random() * 2.5 + 0.3,
+    baseA: Math.random() * 0.8 + 0.2,
+    speed: Math.random() * 0.02 + 0.005,
+    phase: Math.random() * Math.PI * 2,
+    hue: Math.random() > 0.7 ? [255,215,100] : [200,220,255]
+  });
+}
+
+const shootingStars = [];
+function spawnShootingStar(){
+  shootingStars.push({
+    x: Math.random() * W * 0.8 + W * 0.1,
+    y: Math.random() * H * 0.3,
+    vx: (Math.random() * 8 + 5),
+    vy: (Math.random() * 4 + 2),
+    life: 1,
+    len: Math.random() * 60 + 40,
+    decay: Math.random() * 0.015 + 0.008
+  });
+}
+setInterval(spawnShootingStar, 3000 + Math.random() * 4000);
+
+function drawStars(time){
+  ctx.clearRect(0,0,W,H);
+
+  // Milky Way glow
+  const gx = W * 0.6, gy = H * 0.3;
+  const grad = ctx.createRadialGradient(gx, gy, 0, gx, gy, Math.min(W,H) * 0.45);
+  grad.addColorStop(0, 'rgba(180,150,255,0.04)');
+  grad.addColorStop(0.3, 'rgba(150,120,255,0.025)');
+  grad.addColorStop(0.6, 'rgba(100,80,200,0.01)');
+  grad.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,W,H);
+
+  // Milky Way second lobe
+  const gx2 = W * 0.25, gy2 = H * 0.7;
+  const grad2 = ctx.createRadialGradient(gx2, gy2, 0, gx2, gy2, Math.min(W,H) * 0.35);
+  grad2.addColorStop(0, 'rgba(200,170,255,0.03)');
+  grad2.addColorStop(0.5, 'rgba(150,120,255,0.015)');
+  grad2.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = grad2;
+  ctx.fillRect(0,0,W,H);
+
+  for(const s of stars){
+    const a = s.baseA * (0.5 + 0.5 * Math.sin(time * s.speed + s.phase));
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(${s.hue[0]},${s.hue[1]},${s.hue[2]},${a})`;
+    ctx.fill();
+    if(s.r > 1.8){
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r * 2.5, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(${s.hue[0]},${s.hue[1]},${s.hue[2]},${a * 0.08})`;
+      ctx.fill();
+    }
+  }
+
+  for(let i=shootingStars.length-1; i>=0; i--){
+    const ss = shootingStars[i];
+    ss.x += ss.vx;
+    ss.y += ss.vy;
+    ss.life -= ss.decay;
+    if(ss.life <= 0){ shootingStars.splice(i,1); continue; }
+    const tailX = ss.x - ss.vx * (ss.len / Math.hypot(ss.vx, ss.vy));
+    const tailY = ss.y - ss.vy * (ss.len / Math.hypot(ss.vx, ss.vy));
+    ctx.beginPath();
+    ctx.moveTo(ss.x, ss.y);
+    ctx.lineTo(tailX, tailY);
+    ctx.strokeStyle = `rgba(255,255,255,${ss.life * 0.8})`;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    const glow = ctx.createRadialGradient(ss.x, ss.y, 0, ss.x, ss.y, 20);
+    glow.addColorStop(0, `rgba(255,255,255,${ss.life * 0.3})`);
+    glow.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(ss.x-20, ss.y-20, 40, 40);
+  }
+}
+
+// ===== FLOATING PETALS =====
+const petals = [];
+for(let i=0; i<20; i++){
+  petals.push({
+    x: Math.random() * W,
+    y: Math.random() * H,
+    size: Math.random() * 8 + 4,
+    speedY: Math.random() * 0.3 + 0.1,
+    speedX: Math.random() * 0.2 - 0.1,
+    rot: Math.random() * Math.PI * 2,
+    rotSpeed: Math.random() * 0.02 - 0.01,
+    color: ['rgba(255,107,138,0.3)','rgba(232,160,180,0.25)','rgba(255,215,0,0.2)','rgba(192,132,252,0.2)'][Math.floor(Math.random() * 4)]
+  });
+}
+
+function drawPetals(){
+  for(const p of petals){
+    p.y += p.speedY;
+    p.x += p.speedX + Math.sin(p.y * 0.01) * 0.2;
+    p.rot += p.rotSpeed;
+    if(p.y > H + 20){ p.y = -20; p.x = Math.random() * W; }
+    if(p.x < -20) p.x = W + 20;
+    if(p.x > W + 20) p.x = -20;
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot);
+    ctx.beginPath();
+    ctx.ellipse(0, 0, p.size, p.size * 0.6, 0, 0, Math.PI * 2);
+    ctx.fillStyle = p.color;
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+// ===== ANIMATION LOOP =====
+let animTime = 0;
+function animate(){
+  animTime += 1;
+  drawStars(animTime);
+  drawPetals();
+  requestAnimationFrame(animate);
+}
+animate();
+
+// ===== QUOTES CAROUSEL =====
+const quoteCards = document.querySelectorAll('.quote-card');
+const dotsContainer = document.getElementById('quoteDots');
+let currentQuote = 0;
+
+quoteCards.forEach((_, i) => {
+  const dot = document.createElement('button');
+  dot.className = 'quote-dot' + (i === 0 ? ' active' : '');
+  dot.addEventListener('click', () => goToQuote(i));
+  dotsContainer.appendChild(dot);
+});
+
+function goToQuote(idx){
+  quoteCards.forEach(c => c.classList.remove('active'));
+  quoteCards[idx].classList.add('active');
+  document.querySelectorAll('.quote-dot').forEach((d,i) => d.classList.toggle('active', i === idx));
+  currentQuote = idx;
+}
+
+setInterval(() => {
+  goToQuote((currentQuote + 1) % quoteCards.length);
+}, 5000);
+
+// ===== QUIZ =====
+const questions = [
+  {
+    q: "Kangen gak sama aku? 🥺",
+    answers: [
+      { text: "Kangen bangetttt 😭💕", type: "correct", emoji: "❤️" },
+      { text: "Biasa aja sih 😒", type: "shake", emoji: "🙄" },
+      { text: "Enggak! 😤", type: "flee", emoji: "🏃" }
+    ]
+  },
+  {
+    q: "Sayang gak sama aku? 💕",
+    answers: [
+      { text: "Sayang banget dong! 🥰", type: "correct", emoji: "💕" },
+      { text: "Lumayan lahh 🤔", type: "shake", emoji: "🤷" },
+      { text: "Enggak! 🙅", type: "flee", emoji: "🏃" }
+    ]
+  },
+  {
+    q: "Seberapa besar cinta kamu ke aku? 🌌",
+    answers: [
+      { text: "Sebesar galaksi! 🌌❤️", type: "correct", emoji: "✨" },
+      { text: "Ya segitu-gitu aja 😐", type: "shake", emoji: "🤷" },
+      { text: "Gak ada! 😜", type: "flee", emoji: "🏃" }
+    ]
+  },
+  {
+    q: "Aku ganteng gak sih? 😎",
+    answers: [
+      { text: "Ganteng bangettt! 😍🔥", type: "correct", emoji: "😘" },
+      { text: "Biasa aja 🤨", type: "shake", emoji: "🤔" },
+      { text: "Mana mungkin! 😂", type: "flee", emoji: "🏃" }
+    ]
+  },
+  {
+    q: "Mau nikah sama aku gak? 💍",
+    answers: [
+      { text: "MAUUU BANGET! 💍🥹", type: "correct", emoji: "💒" },
+      { text: "Nanti aja deh... 🫣", type: "shake", emoji: "😅" },
+      { text: "LARI DULU! 🏃‍♂️", type: "flee", emoji: "💨" }
+    ]
+  }
+];
+
+let qIdx = 0;
+let score = 0;
+let quizDone = false;
+
+function buildProgress(){
+  const container = document.getElementById('quizProgress');
+  container.innerHTML = '';
+  questions.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'qdot' + (i === qIdx ? ' active' : '');
+    container.appendChild(dot);
+  });
+}
+
+function loadQuestion(){
+  if(qIdx >= questions.length){ showResult(); return; }
+  document.getElementById('quizResult').classList.remove('show');
+  document.getElementById('quizResult').style.display = 'none';
+  document.getElementById('answers').style.display = 'flex';
+  document.getElementById('question').style.display = 'block';
+
+  const q = questions[qIdx];
+  document.getElementById('question').textContent = q.q;
+  const answersDiv = document.getElementById('answers');
+  answersDiv.innerHTML = '';
+  buildProgress();
+
+  q.answers.forEach((a, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'answer';
+    btn.innerHTML = `${a.text} <span class="emoji-bg">${a.emoji}</span>`;
+    btn.dataset.type = a.type;
+    btn.addEventListener('click', () => handleAnswer(btn, i));
+    btn.addEventListener('mouseenter', () => {
+      if(btn.dataset.type === 'flee' && !btn.classList.contains('correct') && !btn.classList.contains('wrong')){
+        fleeButton(btn);
+      }
+    });
+    answersDiv.appendChild(btn);
+  });
+}
+
+function handleAnswer(btn, idx){
+  if(quizDone || btn.classList.contains('correct') || btn.classList.contains('wrong')) return;
+  const type = btn.dataset.type;
+  const allBtns = document.querySelectorAll('.answer');
+
+  if(type === 'correct'){
+    score++;
+    btn.classList.add('correct');
+    heartExplosion();
+    setTimeout(() => {
+      qIdx++;
+      loadQuestion();
+    }, 1200);
+  } else if(type === 'shake'){
+    btn.classList.add('wrong');
+    btn.style.animation = 'shake 0.5s';
+    setTimeout(() => {
+      btn.classList.remove('wrong');
+      btn.style.animation = '';
+    }, 500);
+  } else if(type === 'flee'){
+    fleeButton(btn);
+  }
+}
+
+function fleeButton(btn){
+  const card = document.getElementById('quizCard');
+  const cardRect = card.getBoundingClientRect();
+  const btnRect = btn.getBoundingClientRect();
+  const maxX = cardRect.width - btnRect.width - 10;
+  const maxY = cardRect.height - btnRect.height - 10;
+  const newX = Math.random() * maxX;
+  const newY = Math.random() * maxY;
+  btn.style.position = 'absolute';
+  btn.style.left = newX + 'px';
+  btn.style.top = newY + 'px';
+  btn.style.transform = 'scale(0.9)';
+  setTimeout(() => { btn.style.transform = ''; }, 200);
+}
+
+function showResult(){
+  quizDone = true;
+  document.getElementById('answers').style.display = 'none';
+  document.getElementById('question').style.display = 'none';
+  const resultDiv = document.getElementById('quizResult');
+  resultDiv.style.display = 'block';
+
+  setTimeout(() => {
+    resultDiv.classList.add('show');
+    const pct = Math.round((score / questions.length) * 100);
+    document.getElementById('loveFill').style.width = pct + '%';
+    document.getElementById('lovePercent').textContent = pct + '% LOVE! 💕';
+
+    const msgs = [
+      "Kamu tuh bener-bener cinta sejatiku! ❤️ Aku sayang banget sama kamu!",
+      "Yey! Kamu sayang aku! 🥹 Aku janji bakal selalu jagain kamu!",
+      "Aku juga sayang kamu, lebih dari apapun! 🌟 Makasih udah jadi milikku.",
+      "Selamanya aku bakal milih kamu. 💕 Kamu adalah rumahku."
+    ];
+    document.getElementById('resultMessage').textContent = msgs[Math.floor(Math.random() * msgs.length)];
+    heartExplosion();
+    setTimeout(heartExplosion, 500);
+    setTimeout(heartExplosion, 1000);
+  }, 100);
+}
+
+function resetQuiz(){
+  qIdx = 0;
+  score = 0;
+  quizDone = false;
+  const resultDiv = document.getElementById('quizResult');
+  resultDiv.classList.remove('show');
+  resultDiv.style.display = 'none';
+  document.getElementById('loveFill').style.width = '0%';
+  loadQuestion();
+}
+
+function heartExplosion(){
+  const emojis = ['❤️','💕','💗','💖','💘','💝','✨','🌟','🥰','😍'];
+  for(let i=0; i<25; i++){
+    const el = document.createElement('div');
+    el.className = 'heart-particle';
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    el.style.left = (Math.random() * window.innerWidth * 0.6 + window.innerWidth * 0.2) + 'px';
+    el.style.top = (Math.random() * window.innerHeight * 0.6 + window.innerHeight * 0.2) + 'px';
+    el.style.animationDuration = (Math.random() * 1.5 + 1) + 's';
+    el.style.fontSize = (Math.random() * 20 + 16) + 'px';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+}
+
+// Init quiz
+loadQuestion();
+
+// Resize handler for stars
+window.addEventListener('resize', () => {
+  for(const s of stars){
+    s.x = Math.random() * W;
+    s.y = Math.random() * H;
+  }
+});
+
+// Smooth scroll for sections
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>
